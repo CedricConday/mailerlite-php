@@ -57,6 +57,16 @@ class Subscriber extends AbstractEndpoint
     /**
      * @return array<string, mixed>
      */
+    public function forget(string $subscriberId): array
+    {
+        return $this->httpLayer->post(
+            $this->buildUri($this->endpoint) . "/{$subscriberId}/forget"
+        );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
     public function delete(string $subscriberId): array
     {
         return $this->httpLayer->delete(

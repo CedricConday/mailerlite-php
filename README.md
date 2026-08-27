@@ -12,6 +12,7 @@
         * [Read](#read-subscriber)
         * [Update](#update-subscriber)
         * [Delete](#delete-subscriber)
+        * [Forget](#forget-subscriber)
     * [Campaign API](#email-api)
         * [Create](#create-campaign)
         * [Read](#read-campaign)
@@ -166,6 +167,24 @@ $mailerLite = new MailerLite(['api_key' => 'key']);
 $subscriberId = '123';
 
 $response = $mailerLite->subscribers->delete($subscriberId);
+```
+
+<a name="forget-subscriber"></a>
+
+### Forget
+
+Deletes the subscriber and all of their personal data. Unlike `delete()`, this
+cannot be undone, and it is the endpoint to use when acting on a
+right-to-erasure request.
+
+```php
+use MailerLite\MailerLite;
+
+$mailerLite = new MailerLite(['api_key' => 'key']);
+
+$subscriberId = '123';
+
+$response = $mailerLite->subscribers->forget($subscriberId);
 ```
 
 <a name="campaign"></a>
