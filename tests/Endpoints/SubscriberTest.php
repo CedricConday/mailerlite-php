@@ -58,6 +58,29 @@ class SubscriberTest extends TestCase
         self::assertEquals('/api/subscribers', $request->getUri()->getPath());
     }
 
+    public function test_get_forwards_include_as_a_query_parameter()
+    {
+        $this->subscribers->get(['include' => 'groups']);
+
+        $request = $this->client->getLastRequest();
+
+        self::assertEquals('GET', $request->getMethod());
+        self::assertEquals('/api/subscribers', $request->getUri()->getPath());
+        self::assertEquals('include=groups', $request->getUri()->getQuery());
+    }
+
+    public function test_get_forwards_nested_parameters_as_a_query_string()
+    {
+        $this->subscribers->get(['filter' => ['status' => 'active'], 'limit' => 50]);
+
+        $request = $this->client->getLastRequest();
+
+        self::assertEquals(
+            'filter[status]=active&limit=50',
+            urldecode($request->getUri()->getQuery())
+        );
+    }
+
     public function test_update()
     {
         $this->subscribers->update($this->subscriberId, []);

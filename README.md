@@ -134,6 +134,23 @@ $mailerLite = new MailerLite(['api_key' => 'key']);
 $response = $mailerLite->subscribers->get();
 ```
 
+Unlike `find()`, the list response does not contain group information by
+default. Pass `include` to request it:
+
+```php
+$response = $mailerLite->subscribers->get(['include' => 'groups']);
+```
+
+Any parameter given to `get()` is sent as a query parameter, so filtering and
+pagination work the same way:
+
+```php
+$response = $mailerLite->subscribers->get([
+    'filter' => ['status' => 'active'],
+    'limit' => 50,
+]);
+```
+
 <a name="update-subscriber"></a>
 
 ### Update
