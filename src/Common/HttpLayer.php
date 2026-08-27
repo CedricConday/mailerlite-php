@@ -10,6 +10,7 @@ use Http\Client\HttpClient;
 use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Discovery\Psr18ClientDiscovery;
 use Http\Message\Authentication\Bearer;
+use MailerLite\Exceptions\MailerLiteException;
 use MailerLite\Helpers\HttpErrorHelper;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -29,7 +30,9 @@ class HttpLayer
     protected array $options;
 
     /**
-     * @param array<string, mixed> $options
+     * @param array<string, mixed> $options Requires a non-empty "api_key".
+     *
+     * @throws MailerLiteException When "api_key" is missing or empty.
      */
     public function __construct(
         array $options = [],
@@ -38,6 +41,8 @@ class HttpLayer
         ?StreamFactoryInterface $streamFactory = null
     ) {
         $this->options = $options;
+
+        $this->assertApiKey();
 
         $httpClient = $httpClient ?: Psr18ClientDiscovery::find();
         $this->pluginClient = new PluginClient($httpClient, $this->buildPlugins());
@@ -146,6 +151,18 @@ class HttpLayer
             'body' => $body,
             'response' => $response,
         ];
+    }
+
+    /**
+     * @throws MailerLiteException When "api_key" is missing or empty.
+     */
+    protected function assertApiKey(): void
+    {
+        $apiKey = $this->options['api_key'] ?? null;
+
+        if (!is_string($apiKey) || $apiKey === '') {
+            throw new MailerLiteException('Please set "api_key" in SDK options.');
+        }
     }
 
     /**
