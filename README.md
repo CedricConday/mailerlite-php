@@ -83,6 +83,30 @@ To resolve this you may run
 $ composer require php-http/curl-client guzzlehttp/psr7 php-http/message
 ```
 
+If instead you get a fatal error like
+
+```
+Declaration of Http\Client\Curl\Client::sendRequest(Psr\Http\Message\RequestInterface $request)
+must be compatible with Psr\Http\Client\ClientInterface::sendRequest(...): Psr\Http\Message\ResponseInterface
+```
+
+the HTTP client that discovery found predates PSR-18. This SDK requires
+`php-http/httplug ^2.1`, whose `Http\Client\HttpClient` extends
+`Psr\Http\Client\ClientInterface`, so a client written against Httplug 1.x is
+not compatible with it.
+
+Composer will not produce this combination — `php-http/curl-client` v1.x requires
+`php-http/httplug ^1.0` and cannot be installed alongside this SDK. If you see
+this error, the libraries were most likely copied into the project by hand
+rather than installed. Install them with Composer instead:
+
+```bash
+$ composer require mailerlite/mailerlite-php php-http/curl-client guzzlehttp/psr7 php-http/message
+```
+
+The error cannot be reported by the SDK: PHP raises it while loading the
+incompatible class, before any SDK code runs, and it is not catchable.
+
 <a name="usage"></a>
 
 # Usage
